@@ -28,8 +28,8 @@ class FileDependency
     @files.each do |file|
       temparray = []
       File.readlines(file).each do |line|
-        if line =~ match_against(filenames)
-          temparray << full_filepath(@path, line.strip)
+        if line.match(match_against(filenames))
+          temparray << full_filepath(@path, line.match(match_against(filenames)))
         end
       end
       deps[file] = temparray if temparray
@@ -70,6 +70,10 @@ class FileDependency
 
   def has_self_referential_files?
     @file_dependencies.any? { |file, deps| deps.include? file }
+  end
+
+  def to_regexp(object)
+    Regexp.try_convert(object)
   end
 
   #TSort methods
